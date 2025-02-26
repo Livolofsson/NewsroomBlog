@@ -1,7 +1,7 @@
 +++
 date = 2025-02-07
 title = "Reverse Engineering Kivra's API"
-image = "/images/kivratest2.png"
+image = "images/kivratest2.png"
 +++
 
 
@@ -38,7 +38,7 @@ Okay, time to do what every nerd loves: looking underneath the hood.
 
 You’ll see a flood of network requests, but we’re looking for one specific operation—something like receipt.
 
-![Alt text](/images/behindhood.png)
+![Alt text](images/behindhood.png)
 
 ---
 
@@ -52,7 +52,7 @@ If you’re already comfortable with reverse-engineering APIs, you might skip th
 3. Error messages are our best friends—they guide us to missing parameters.  
 4. Just go back to **Network Inspect Mode**, grab the missing pieces, and try again.  
 
-![Alt text](/images/errorpostman.png)
+![Alt text](images/errorpostman.png)
 
 Two API requests are needed:  
 - One with the **operation name `receipt`**, found in the overview page in Kivra. When you've reconstructed the request successfully in postman you'll get a json body looking like this: 
