@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" >
-  <head><script src="/NewsroomBlog/livereload.js?mindelay=10&amp;v=2&amp;port=52344&amp;path=NewsroomBlog/livereload" data-no-instant defer></script>
+  <head><script src="/NewsroomBlog/livereload.js?mindelay=10&amp;v=2&amp;port=52206&amp;path=NewsroomBlog/livereload" data-no-instant defer></script>
   <title>Reverse engineering kivra&#39;s API | Project Showcase</title>
   <meta charset='utf-8'>
   <link rel="stylesheet" href="/NewsroomBlog/css/custom.css">
@@ -15,16 +15,16 @@
 <meta property="og:type" content="article">
 <meta property="og:title" content="Reverse Engineering Kivra&#39;s API">
 <meta property="og:description" content="Kivra is a digital service that many companies use to send documents to Swedish citizens, such as bills, tax notices and an occasional reminder such as “Hey,">
-<meta property="og:url" content="http://localhost:52344/NewsroomBlog/posts/kivra/">
-<meta property="og:image" content="http://localhost:52344/NewsroomBlog/images/images/kivratest2.png">
-<link rel="canonical" href="http://localhost:52344/NewsroomBlog/posts/kivra/">
+<meta property="og:url" content="http://localhost:52206/NewsroomBlog/posts/kivra/kivra/">
+<meta property="og:image" content="http://localhost:52206/NewsroomBlog/images/images/kivratest2.png">
+<link rel="canonical" href="http://localhost:52206/NewsroomBlog/posts/kivra/kivra/">
 
-<link rel="apple-touch-icon" sizes="180x180" href='http://localhost:52344/NewsroomBlog/apple-touch-icon.png'>
-<link rel="icon" type="image/png" sizes="32x32" href='http://localhost:52344/NewsroomBlog/favicon-32x32.png'>
-<link rel="icon" type="image/png" sizes='16x16' href='http://localhost:52344/NewsroomBlog/favicon-16x16.png'>
-<link rel="manifest" href='http://localhost:52344/NewsroomBlog/site.webmanifest'>
+<link rel="apple-touch-icon" sizes="180x180" href='http://localhost:52206/NewsroomBlog/apple-touch-icon.png'>
+<link rel="icon" type="image/png" sizes="32x32" href='http://localhost:52206/NewsroomBlog/favicon-32x32.png'>
+<link rel="icon" type="image/png" sizes='16x16' href='http://localhost:52206/NewsroomBlog/favicon-16x16.png'>
+<link rel="manifest" href='http://localhost:52206/NewsroomBlog/site.webmanifest'>
 
-<link rel="stylesheet" href="http://localhost:52344/NewsroomBlog/css/styles.648e60c6d86809f863ae1346848574b9c685732794e7851c7d3e557de9ddd293bc1c209f963d5041785c2fd4268470bdfde453a99f550b655d1b4f825eed4682.css" integrity="sha512-ZI5gxthoCfhjrhNGhIV0ucaFcyeU54UcfT5Vfend0pO8HCCflj1QQXhcL9QmhHC9/eRTqZ9VC2VdG0&#43;CXu1Ggg==">
+<link rel="stylesheet" href="http://localhost:52206/NewsroomBlog/css/styles.648e60c6d86809f863ae1346848574b9c685732794e7851c7d3e557de9ddd293bc1c209f963d5041785c2fd4268470bdfde453a99f550b655d1b4f825eed4682.css" integrity="sha512-ZI5gxthoCfhjrhNGhIV0ucaFcyeU54UcfT5Vfend0pO8HCCflj1QQXhcL9QmhHC9/eRTqZ9VC2VdG0&#43;CXu1Ggg==">
 </head>
 
   <body>
@@ -39,7 +39,7 @@
 </div>
 <header class="nav">
   <nav class="nav-menu">
-    <a href=http://localhost:52344/NewsroomBlog/ class="nav-brand nav_item">
+    <a href=http://localhost:52206/NewsroomBlog/ class="nav-brand nav_item">
         Project Showcase</a>
     <div class="nav_bar-wrap">
       <div class="nav_bar"></div>
@@ -56,7 +56,7 @@
         <div class="post_inner">
         
         
-          <img src="http://localhost:52344/NewsroomBlog/images/kivratest2.png" alt="images/kivratest2.png" class="post_thumbnail">
+          <img src="http://localhost:52206/NewsroomBlog/images/kivratest2.png" alt="images/kivratest2.png" class="post_thumbnail">
         
           <p>Kivra is a digital service that many companies use to send documents to Swedish citizens, such as bills, tax notices and an occasional reminder such as “Hey, it’s time for a doctor visit!”  letting you know you’re not invincible anymore.</p>
 <p>It also collects all receipts of purchases you’ve made, if you want them to! The coolest part? You automatically stop receiving paper documents in your mailbox  or receipts in-store, because you’ve signed up to get them digitally instead! It’s the perfect gift for adulthood. 😉</p>
@@ -82,11 +82,7 @@
 <li>Refresh the page and watch Kivra’s API spill all its secrets right in front of you.</li>
 </ol>
 <p>You’ll see a flood of network requests, but we’re looking for one specific operation—something like receipt.</p>
-<figure><img src="/NewsroomBlog/posts/kivra/behindhood.png"><figcaption>
-      <h4>Inspecting Network Requests</h4>
-    </figcaption>
-</figure>
-
+<p><img src="/images/behindhood.png" alt="Alt text"></p>
 <hr>
 <h2 id="step-3-decode-the-api-calls-with-postman">Step 3️: Decode the API Calls with Postman</h2>
 <p><em>(Optional, but super helpful!)</em></p>
@@ -97,11 +93,7 @@
 <li>Error messages are our best friends—they guide us to missing parameters.</li>
 <li>Just go back to <strong>Network Inspect Mode</strong>, grab the missing pieces, and try again.</li>
 </ol>
-<figure><img src="/NewsroomBlog/posts/kivra/errorpostman.png"><figcaption>
-      <h4>Postman Debugging</h4>
-    </figcaption>
-</figure>
-
+<p><img src="/images/errorpostman.png" alt="Alt text"></p>
 <p>Two API requests are needed:</p>
 <ul>
 <li>One with the <strong>operation name <code>receipt</code></strong>, found in the overview page in Kivra. When you&rsquo;ve reconstructed the request successfully in postman you&rsquo;ll get a json body looking like this:</li>
@@ -566,7 +558,7 @@
         </div>
       </div>
     </div>
-    <a href=http://localhost:52344/NewsroomBlog/ class="post_nav"><span class="post_next">Latest Posts
+    <a href=http://localhost:52206/NewsroomBlog/ class="post_nav"><span class="post_next">Latest Posts
       <svg class="icon icon_scale">
         <use xlink:href="#double-arrow"></use>
       </svg>
@@ -580,7 +572,7 @@
 </footer>
 
 
-<script src="http://localhost:52344/NewsroomBlog/js/index.min.b564c86542589610e28e11d8d3461fdc4a3a6bcc1a982b63be6f2ce58799739b919feed1eee9486dc48e1b6466c65bca037c924df15332d5bba486b0548a9a9f.js"></script>
+<script src="http://localhost:52206/NewsroomBlog/js/index.min.5b269c95b2e6b31d40d4ffc61f6bafa968ff89e1bedc4ee339f002ef594329bb60f283f74368b6ed32590bdaff3ac17b1144870b77b578b1bef06a16751d9a64.js"></script>
 
     <svg width="0" height="0" class="hidden">
   <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 699.428 699.428" id="copy">
