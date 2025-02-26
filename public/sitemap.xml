@@ -2,10 +2,17 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:64708/categories/</loc>
+    <loc>http://localhost:51559/posts/</loc>
+    <lastmod>2025-02-07T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:64708/</loc>
+    <loc>http://localhost:51559/</loc>
+    <lastmod>2025-02-07T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:64708/tags/</loc>
+    <loc>http://localhost:51559/posts/kivra/</loc>
+    <lastmod>2025-02-07T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>http://localhost:51559/categories/</loc>
+  </url><url>
+    <loc>http://localhost:51559/tags/</loc>
   </url>
 </urlset>

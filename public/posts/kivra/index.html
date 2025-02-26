@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en" >
+  <head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=51559&amp;path=livereload" data-no-instant defer></script>
+  <title>Reverse engineering kivra&#39;s API | Project Showcase</title>
+  <meta charset='utf-8'>
+  <link rel="stylesheet" href="/css/custom.css">
+  <meta name="viewport" content ="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+  
+  
+<meta name="keywords" content="Project Showcase">
+<meta property="og:locale" content='en_US'>
+<meta property="og:type" content="article">
+<meta property="og:title" content="Reverse Engineering Kivra&#39;s API">
+<meta property="og:description" content="Kivra is a digital service that many companies use to send documents to Swedish citizens, such as bills, tax notices and an occasional reminder such as “Hey,">
+<meta property="og:url" content="http://localhost:51559/posts/kivra/">
+<meta property="og:image" content="http://localhost:51559/images/images/kivratest2.png">
+<link rel="canonical" href="http://localhost:51559/posts/kivra/">
+
+<link rel="apple-touch-icon" sizes="180x180" href='http://localhost:51559/apple-touch-icon.png'>
+<link rel="icon" type="image/png" sizes="32x32" href='http://localhost:51559/favicon-32x32.png'>
+<link rel="icon" type="image/png" sizes='16x16' href='http://localhost:51559/favicon-16x16.png'>
+<link rel="manifest" href='http://localhost:51559/site.webmanifest'>
+
+<link rel="stylesheet" href="http://localhost:51559/css/styles.648e60c6d86809f863ae1346848574b9c685732794e7851c7d3e557de9ddd293bc1c209f963d5041785c2fd4268470bdfde453a99f550b655d1b4f825eed4682.css" integrity="sha512-ZI5gxthoCfhjrhNGhIV0ucaFcyeU54UcfT5Vfend0pO8HCCflj1QQXhcL9QmhHC9/eRTqZ9VC2VdG0&#43;CXu1Ggg==">
+</head>
+
+  <body>
+    <div class="nav-drop">
+  <div class="nav-body">
+    <div class="nav-close"></div><div class="color_mode">
+  <label for="mode">Toggle Dark Mode</label>
+  <input type="checkbox" class="color_choice" id="mode">
+</div>
+
+  </div>
+</div>
+<header class="nav">
+  <nav class="nav-menu">
+    <a href=http://localhost:51559/ class="nav-brand nav_item">
+        Project Showcase</a>
+    <div class="nav_bar-wrap">
+      <div class="nav_bar"></div>
+    </div>
+  </nav>
+</header>
+
+    <main>
+      
+  <div class="wrap mt post">
+    <div><p class=post_date>07. February 2025</p>
+      <h1 class="post_title">Reverse Engineering Kivra&#39;s API</h1>
+      <div class="post_body">
+        <div class="post_inner">
+        
+        
+          <img src="http://localhost:51559/images/kivratest2.png" alt="/images/kivratest2.png" class="post_thumbnail">
+        
+          <p>Kivra is a digital service that many companies use to send documents to Swedish citizens, such as bills, tax notices and an occasional reminder such as “Hey, it’s time for a doctor visit!”  letting you know you’re not invincible anymore.</p>
+<p>It also collects all receipts of purchases you’ve made, if you want them to! The coolest part? You automatically stop receiving paper documents in your mailbox  or receipts in-store, because you’ve signed up to get them digitally instead! It’s the perfect gift for adulthood. 😉</p>
+<hr>
+<h2 id="if-youre-like-me-youve-probably-wondered">If you’re like me, you’ve probably wondered:</h2>
+<ul>
+<li><strong>Can I uncover patterns/trends in my purchase history to make better financial decisions?</strong></li>
+<li><strong>Am I a responsible adult or just really good at pretending? 🤔</strong></li>
+<li><strong>Can I track my receipts like some kind of financial detective?</strong></li>
+</ul>
+<p>The answer is <strong>YES!</strong>  But here’s the twist—Kivra doesn’t exactly hand over this data in a neat little export button. So, like any curious soul (or mildly obsessive person), I reverse-engineered my way into grabbing my own receipts programmatically.</p>
+<hr>
+<h2 id="step-1-break-intowait-no-just-log-into-kivra">Step 1️: Break into—Wait, No, Just Log Into Kivra</h2>
+<p>Before we start our (totally legal and ethical) data heist, you’ll need to log into Kivra using BankID. A digital idenfication system widely used in Sweden.</p>
+<p>This post, however, is all about how to actually get access to your receipts as a private person from Kivra. If documentation existed about how to acquire that as a private person, then this post wouldn&rsquo;t have existed. 😅 We&rsquo;ll have to reverse engineer their API.</p>
+<p>Once logged in with your BankID, it’s pretty straightforward though. Don’t worry, this is not hacking—this is just playing Sherlock Holmes. 😎 Reverse engineering is like hacking but having the law on your side.</p>
+<hr>
+<h2 id="step-2-spy-on-the-network">Step 2️: Spy on the Network</h2>
+<p>Okay, time to do what every nerd loves: looking underneath the hood.</p>
+<ol>
+<li>Right-click to open “Inspect”.</li>
+<li>Click on the <strong>Network tab</strong>.</li>
+<li>Refresh the page and watch Kivra’s API spill all its secrets right in front of you.</li>
+</ol>
+<p>You’ll see a flood of network requests, but we’re looking for one specific operation—something like receipt.</p>
+<p><img src="/images/behindhood.png" alt="Alt text"></p>
+<hr>
+<h2 id="step-3-decode-the-api-calls-with-postman">Step 3️: Decode the API Calls with Postman</h2>
+<p><em>(Optional, but super helpful!)</em></p>
+<p>If you’re already comfortable with reverse-engineering APIs, you might skip this. Otherwise, <strong>Postman</strong> helps figure out the puzzle pieces of our detective work.</p>
+<ol>
+<li>Paste the request into Postman and click <strong>Send</strong>.</li>
+<li>You’ll get error messages telling you what’s missing.</li>
+<li>Error messages are our best friends—they guide us to missing parameters.</li>
+<li>Just go back to <strong>Network Inspect Mode</strong>, grab the missing pieces, and try again.</li>
+</ol>
+<p><img src="/images/errorpostman.png" alt="Alt text"></p>
+<p>Two API requests are needed:</p>
+<ul>
+<li>One with the <strong>operation name <code>receipt</code></strong>, found in the overview page in Kivra. When you&rsquo;ve reconstructed the request successfully in postman you&rsquo;ll get a json body looking like this:</li>
+</ul>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    &#34;data&#34;: {
+</span></span><span style="display:flex;"><span>        &#34;receiptsV2&#34;: {
+</span></span><span style="display:flex;"><span>            &#34;__typename&#34;: &#34;ReceiptListV2&#34;,
+</span></span><span style="display:flex;"><span>            &#34;total&#34;: 243,
+</span></span><span style="display:flex;"><span>            &#34;offset&#34;: 0,
+</span></span><span style="display:flex;"><span>            &#34;limit&#34;: 1,
+</span></span><span style="display:flex;"><span>            &#34;list&#34;: [
+</span></span><span style="display:flex;"><span>                {
+</span></span><span style="display:flex;"><span>                    &#34;__typename&#34;: &#34;ReceiptBaseDetails&#34;,
+</span></span><span style="display:flex;"><span>                    &#34;key&#34;: &#34;502dfbf36f4ffdcba10cb78851c1dcf9f1366d98063&#34;,
+</span></span><span style="display:flex;"><span>                    &#34;purchaseDate&#34;: &#34;2025-02-13T16:44:39Z&#34;,
+</span></span><span style="display:flex;"><span>                    &#34;totalAmount&#34;: {
+</span></span><span style="display:flex;"><span>                        &#34;formatted&#34;: &#34;75,25 kr&#34;
+</span></span><span style="display:flex;"><span>                    },
+</span></span><span style="display:flex;"><span>                    &#34;store&#34;: {
+</span></span><span style="display:flex;"><span>                        &#34;name&#34;: &#34;ICA&#34;,
+</span></span><span style="display:flex;"><span>                        &#34;logo&#34;: {
+</span></span><span style="display:flex;"><span>                            &#34;publicUrl&#34;: &#34;https://static.kivra.com/receipt/158410061928d4a9a251d546dba34a6361e37e7537&#34;
+</span></span><span style="display:flex;"><span>                        }
+</span></span><span style="display:flex;"><span>                    },
+</span></span><span style="display:flex;"><span>                    &#34;accessInfo&#34;: {
+</span></span><span style="display:flex;"><span>                        &#34;owner&#34;: {
+</span></span><span style="display:flex;"><span>                            &#34;isMe&#34;: true,
+</span></span><span style="display:flex;"><span>                            &#34;name&#34;: &#34;Sam Altman&#34;
+</span></span><span style="display:flex;"><span>                        }
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            ]
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ul>
+<li>Another with <strong>receipt details</strong>, found by checking the API requests while opening a specific receipt. A successfull request in Postman will have a respone comes in json format. A subset of the body looks like this:</li>
+</ul>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">48
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">49
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">50
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">51
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">52
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">53
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">54
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">55
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">56
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">57
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">58
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">59
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">60
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">61
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">62
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">63
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">64
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">65
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">66
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">67
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">68
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">69
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">70
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">71
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">72
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">73
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">74
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">75
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">76
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">77
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">78
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">79
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">80
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">81
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">82
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">83
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">84
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">85
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">86
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">87
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">88
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">89
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">90
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">91
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">92
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">93
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>{
+</span></span><span style="display:flex;"><span>    &#34;data&#34;: {
+</span></span><span style="display:flex;"><span>        &#34;receiptV2&#34;: {
+</span></span><span style="display:flex;"><span>            &#34;key&#34;: &#34;2502dfbf36f4ffdcba10cb78851c1dcf9f1366d98063&#34;,
+</span></span><span style="display:flex;"><span>            &#34;content&#34;: {
+</span></span><span style="display:flex;"><span>                &#34;header&#34;: {
+</span></span><span style="display:flex;"><span>                    &#34;totalPurchaseAmount&#34;: &#34;75,25 kr&#34;,
+</span></span><span style="display:flex;"><span>                    &#34;subAmounts&#34;: [
+</span></span><span style="display:flex;"><span>                        &#34;Poänggrundande belopp 75,25 kr&#34;
+</span></span><span style="display:flex;"><span>                    ],
+</span></span><span style="display:flex;"><span>                    &#34;isoDate&#34;: &#34;2025-02-13T16:44:39Z&#34;,
+</span></span><span style="display:flex;"><span>                    &#34;formattedDate&#34;: &#34;2025-02-13, 17:44&#34;,
+</span></span><span style="display:flex;"><span>                    &#34;labels&#34;: [],
+</span></span><span style="display:flex;"><span>                    &#34;logo&#34;: {
+</span></span><span style="display:flex;"><span>                        &#34;publicUrl&#34;: &#34;https://static.kivra.com/receipt/1579618096bac60a57676c4f78be1c6af5025d513a&#34;
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                },
+</span></span><span style="display:flex;"><span>                &#34;items&#34;: {
+</span></span><span style="display:flex;"><span>                    &#34;allItems&#34;: {
+</span></span><span style="display:flex;"><span>                        &#34;text&#34;: &#34;Produkter&#34;,
+</span></span><span style="display:flex;"><span>                        &#34;items&#34;: [
+</span></span><span style="display:flex;"><span>                            {
+</span></span><span style="display:flex;"><span>                                &#34;text&#34;: [],
+</span></span><span style="display:flex;"><span>                                &#34;type&#34;: &#34;product&#34;,
+</span></span><span style="display:flex;"><span>                                &#34;name&#34;: &#34;Apelsin&#34;,
+</span></span><span style="display:flex;"><span>                                &#34;money&#34;: {
+</span></span><span style="display:flex;"><span>                                    &#34;formatted&#34;: &#34;22,00 kr&#34;
+</span></span><span style="display:flex;"><span>                                },
+</span></span><span style="display:flex;"><span>                                &#34;quantityCost&#34;: null,
+</span></span><span style="display:flex;"><span>                                &#34;deposits&#34;: [],
+</span></span><span style="display:flex;"><span>                                &#34;costModifiers&#34;: [],
+</span></span><span style="display:flex;"><span>                                &#34;identifiers&#34;: []
+</span></span><span style="display:flex;"><span>                            },
+</span></span><span style="display:flex;"><span>                            {
+</span></span><span style="display:flex;"><span>                                &#34;text&#34;: [],
+</span></span><span style="display:flex;"><span>                                &#34;type&#34;: &#34;product&#34;,
+</span></span><span style="display:flex;"><span>                                &#34;name&#34;: &#34;Exotic Zero&#34;,
+</span></span><span style="display:flex;"><span>                                &#34;money&#34;: {
+</span></span><span style="display:flex;"><span>                                    &#34;formatted&#34;: &#34;24,95 kr&#34;
+</span></span><span style="display:flex;"><span>                                },
+</span></span><span style="display:flex;"><span>                                &#34;quantityCost&#34;: null,
+</span></span><span style="display:flex;"><span>                                &#34;deposits&#34;: [
+</span></span><span style="display:flex;"><span>                                    {
+</span></span><span style="display:flex;"><span>                                        &#34;description&#34;: &#34;Pant&#34;,
+</span></span><span style="display:flex;"><span>                                        &#34;money&#34;: {
+</span></span><span style="display:flex;"><span>                                            &#34;formatted&#34;: &#34;2,00 kr&#34;
+</span></span><span style="display:flex;"><span>                                        },
+</span></span><span style="display:flex;"><span>                                        &#34;isRefund&#34;: false
+</span></span><span style="display:flex;"><span>                                    }
+</span></span><span style="display:flex;"><span>                                ],
+</span></span><span style="display:flex;"><span>                                &#34;costModifiers&#34;: [],
+</span></span><span style="display:flex;"><span>                                &#34;identifiers&#34;: []
+</span></span><span style="display:flex;"><span>                            },
+</span></span><span style="display:flex;"><span>                            {
+</span></span><span style="display:flex;"><span>                                &#34;text&#34;: [],
+</span></span><span style="display:flex;"><span>                                &#34;type&#34;: &#34;product&#34;,
+</span></span><span style="display:flex;"><span>                                &#34;name&#34;: &#34;Lösviktsgodis&#34;,
+</span></span><span style="display:flex;"><span>                                &#34;money&#34;: {
+</span></span><span style="display:flex;"><span>                                    &#34;formatted&#34;: &#34;22,35 kr&#34;
+</span></span><span style="display:flex;"><span>                                },
+</span></span><span style="display:flex;"><span>                                &#34;quantityCost&#34;: {
+</span></span><span style="display:flex;"><span>                                    &#34;formatted&#34;: &#34;0,205 kg * 109,00 kr/kg&#34;
+</span></span><span style="display:flex;"><span>                                },
+</span></span><span style="display:flex;"><span>                                &#34;deposits&#34;: [],
+</span></span><span style="display:flex;"><span>                                &#34;costModifiers&#34;: [],
+</span></span><span style="display:flex;"><span>                                &#34;identifiers&#34;: []
+</span></span><span style="display:flex;"><span>                            },
+</span></span><span style="display:flex;"><span>                            {
+</span></span><span style="display:flex;"><span>                                &#34;text&#34;: [],
+</span></span><span style="display:flex;"><span>                                &#34;type&#34;: &#34;product&#34;,
+</span></span><span style="display:flex;"><span>                                &#34;name&#34;: &#34;Plastkasse&#34;,
+</span></span><span style="display:flex;"><span>                                &#34;money&#34;: {
+</span></span><span style="display:flex;"><span>                                    &#34;formatted&#34;: &#34;3,95 kr&#34;
+</span></span><span style="display:flex;"><span>                                },
+</span></span><span style="display:flex;"><span>                                &#34;quantityCost&#34;: null,
+</span></span><span style="display:flex;"><span>                                &#34;deposits&#34;: [],
+</span></span><span style="display:flex;"><span>                                &#34;costModifiers&#34;: [],
+</span></span><span style="display:flex;"><span>                                &#34;identifiers&#34;: []
+</span></span><span style="display:flex;"><span>                            }
+</span></span><span style="display:flex;"><span>                        ]
+</span></span><span style="display:flex;"><span>                    }
+</span></span><span style="display:flex;"><span>                }
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            &#34;sender&#34;: {
+</span></span><span style="display:flex;"><span>                &#34;name&#34;: &#34;ICA&#34;,
+</span></span><span style="display:flex;"><span>                &#34;key&#34;: &#34;15765665678a499fdd66139b23016615a978111111&#34;
+</span></span><span style="display:flex;"><span>            },
+</span></span><span style="display:flex;"><span>            &#34;attributes&#34;: {
+</span></span><span style="display:flex;"><span>                &#34;isUpdatedWithReturns&#34;: false
+</span></span><span style="display:flex;"><span>            }
+</span></span><span style="display:flex;"><span>        }
+</span></span><span style="display:flex;"><span>    }
+</span></span><span style="display:flex;"><span>}
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>What&rsquo;s important to note here is that by getting the <strong>key</strong> in the first response, we can use it to get receipt detail by inserting the <strong>key</strong> in our receipt detail request. This is useful for our Python script later as it enables us to fetch details about many receipts automatically.</p>
+<hr>
+<h2 id="step-4-automate-with-python">Step 4️: Automate with Python</h2>
+<p>Once I knew these API calls worked in Postman, it was time to write a Python script to fetch all receipts using the <code>requests</code> library.</p>
+<p><strong>What I did:</strong></p>
+<ol>
+<li><strong>Requested all unique keys</strong> that define each receipt.</li>
+</ol>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#cf222e">import</span> <span style="color:#24292e">requests</span>
+</span></span><span style="display:flex;"><span><span style="color:#cf222e">from</span> <span style="color:#24292e">dotenv</span> <span style="color:#cf222e">import</span> load_dotenv
+</span></span><span style="display:flex;"><span><span style="color:#cf222e">import</span> <span style="color:#24292e">os</span> 
+</span></span><span style="display:flex;"><span><span style="color:#cf222e">import</span> <span style="color:#24292e">csv</span> 
+</span></span><span style="display:flex;"><span><span style="color:#cf222e">import</span> <span style="color:#24292e">pandas</span> <span style="color:#cf222e">as</span> <span style="color:#24292e">pd</span>
+</span></span><span style="display:flex;"><span><span style="color:#cf222e">from</span> <span style="color:#24292e">tqdm</span> <span style="color:#cf222e">import</span> tqdm
+</span></span><span style="display:flex;"><span><span style="color:#cf222e">from</span> <span style="color:#24292e">datetime</span> <span style="color:#cf222e">import</span> datetime 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>load_dotenv<span style="color:#1f2328">()</span>
+</span></span><span style="display:flex;"><span>token <span style="color:#0550ae">=</span> os<span style="color:#0550ae">.</span>getenv<span style="color:#1f2328">(</span><span style="color:#0a3069">&#34;KIVRA_AUTH_TOKEN&#34;</span><span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>x_actor_key <span style="color:#0550ae">=</span> os<span style="color:#0550ae">.</span>getenv<span style="color:#1f2328">(</span><span style="color:#0a3069">&#34;x-actor-key&#34;</span><span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>url <span style="color:#0550ae">=</span> <span style="color:#0a3069">&#34;https://bff.kivra.com/graphql&#34;</span>
+</span></span><span style="display:flex;"><span>list_receipt_body <span style="color:#0550ae">=</span> <span style="color:#1f2328">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#0a3069">&#34;operationName&#34;</span><span style="color:#1f2328">:</span> <span style="color:#0a3069">&#34;Receipts&#34;</span><span style="color:#1f2328">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#0a3069">&#34;query&#34;</span><span style="color:#1f2328">:</span> <span style="color:#0a3069">&#34;query Receipts($search: String, $limit: Int, $offset: Int) {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  receiptsV2(search: $search, limit: $limit, offset: $offset) {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    __typename</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    total</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    offset</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    limit</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    list {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      ...baseDetailsFields</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">}</span><span style="color:#0a3069">\n\n</span><span style="color:#0a3069">fragment baseDetailsFields on ReceiptBaseDetails {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  key</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  purchaseDate</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  totalAmount {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    formatted</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  attributes {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    isCopy</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    isExpensed</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    isReturn</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    isTrashed</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  store {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    name</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    logo {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      publicUrl</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  tags {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    key</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    name</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    icon</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">}&#34;</span><span style="color:#1f2328">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#0a3069">&#34;variables&#34;</span><span style="color:#1f2328">:</span> <span style="color:#1f2328">{</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#0a3069">&#34;limit&#34;</span><span style="color:#1f2328">:</span> <span style="color:#0550ae">1000</span><span style="color:#1f2328">,</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#0a3069">&#34;offset&#34;</span><span style="color:#1f2328">:</span> <span style="color:#0550ae">0</span><span style="color:#1f2328">,</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#0a3069">&#34;search&#34;</span><span style="color:#1f2328">:</span> <span style="color:#cf222e">None</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#1f2328">}</span>
+</span></span><span style="display:flex;"><span><span style="color:#1f2328">}</span>
+</span></span><span style="display:flex;"><span>headers <span style="color:#0550ae">=</span> <span style="color:#1f2328">{</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#0a3069">&#34;x-actor-key&#34;</span><span style="color:#1f2328">:</span> <span style="color:#0a3069">f</span><span style="color:#0a3069">&#34;</span><span style="color:#0a3069">{</span>x_actor_key<span style="color:#0a3069">}</span><span style="color:#0a3069">&#34;</span><span style="color:#1f2328">,</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#0a3069">&#34;Authorization&#34;</span><span style="color:#1f2328">:</span> <span style="color:#0a3069">f</span><span style="color:#0a3069">&#34;Bearer </span><span style="color:#0a3069">{</span>token<span style="color:#0a3069">}</span><span style="color:#0a3069">&#34;</span>
+</span></span><span style="display:flex;"><span><span style="color:#1f2328">}</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#6639ba">print</span><span style="color:#1f2328">(</span><span style="color:#0a3069">&#34;Started fetching receipts&#34;</span><span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>response <span style="color:#0550ae">=</span> requests<span style="color:#0550ae">.</span>post<span style="color:#1f2328">(</span>url<span style="color:#1f2328">,</span> json<span style="color:#0550ae">=</span>list_receipt_body<span style="color:#1f2328">,</span> headers<span style="color:#0550ae">=</span>headers<span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>result <span style="color:#0550ae">=</span> response<span style="color:#0550ae">.</span>json<span style="color:#1f2328">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>receipt_keys <span style="color:#0550ae">=</span> <span style="color:#1f2328">[</span>dicti<span style="color:#1f2328">[</span><span style="color:#0a3069">&#34;key&#34;</span><span style="color:#1f2328">]</span> <span style="color:#cf222e">for</span> dicti <span style="color:#0550ae">in</span> result<span style="color:#1f2328">[</span><span style="color:#0a3069">&#34;data&#34;</span><span style="color:#1f2328">][</span><span style="color:#0a3069">&#34;receiptsV2&#34;</span><span style="color:#1f2328">][</span><span style="color:#0a3069">&#34;list&#34;</span><span style="color:#1f2328">]]</span>
+</span></span><span style="display:flex;"><span><span style="color:#6639ba">print</span><span style="color:#1f2328">(</span><span style="color:#0a3069">f</span><span style="color:#0a3069">&#34;Fetched </span><span style="color:#0a3069">{</span><span style="color:#6639ba">len</span><span style="color:#1f2328">(</span>receipt_keys<span style="color:#1f2328">)</span><span style="color:#0a3069">}</span><span style="color:#0a3069"> of </span><span style="color:#0a3069">{</span>result<span style="color:#1f2328">[</span><span style="color:#0a3069">&#39;data&#39;</span><span style="color:#1f2328">][</span><span style="color:#0a3069">&#39;receiptsV2&#39;</span><span style="color:#1f2328">][</span><span style="color:#0a3069">&#39;total&#39;</span><span style="color:#1f2328">]</span><span style="color:#0a3069">}</span><span style="color:#0a3069">&#34;</span><span style="color:#1f2328">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="2">
+<li>Fetched the details of all receipts.</li>
+<li>Saved the data in a structured format. In my case it was a CSV, with details such as the ones seen in csv_headers in the code below.</li>
+</ol>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-py3" data-lang="py3"><span style="display:flex;"><span>csv_headers <span style="color:#0550ae">=</span> <span style="color:#1f2328">[</span><span style="color:#0a3069">&#34;Primary Key&#34;</span><span style="color:#1f2328">,</span> <span style="color:#0a3069">&#34;Receipt Key&#34;</span><span style="color:#1f2328">,</span> <span style="color:#0a3069">&#34;Purchase Date&#34;</span><span style="color:#1f2328">,</span> <span style="color:#0a3069">&#34;Store Name&#34;</span><span style="color:#1f2328">,</span> <span style="color:#0a3069">&#34;Item&#34;</span><span style="color:#1f2328">,</span> <span style="color:#0a3069">&#34;Product Amount&#34;</span><span style="color:#1f2328">,</span> <span style="color:#0a3069">&#34;Category&#34;</span><span style="color:#1f2328">,</span> <span style="color:#0a3069">&#34;Product Amount Numeric&#34;</span><span style="color:#1f2328">]</span>
+</span></span><span style="display:flex;"><span>csv_file_path <span style="color:#0550ae">=</span> <span style="color:#0a3069">f</span><span style="color:#0a3069">&#34;receipts_</span><span style="color:#0a3069">{</span>datetime<span style="color:#0550ae">.</span>now<span style="color:#1f2328">()</span><span style="color:#0550ae">.</span>strftime<span style="color:#1f2328">(</span><span style="color:#0a3069">&#39;%Y_%m_</span><span style="color:#0a3069">%d</span><span style="color:#0a3069">&#39;</span><span style="color:#1f2328">)</span><span style="color:#0a3069">}</span><span style="color:#0a3069">.csv&#34;</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>primary_key_count <span style="color:#0550ae">=</span> <span style="color:#0550ae">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#cf222e">with</span> <span style="color:#6639ba">open</span><span style="color:#1f2328">(</span>csv_file_path<span style="color:#1f2328">,</span> mode<span style="color:#0550ae">=</span><span style="color:#0a3069">&#34;w&#34;</span><span style="color:#1f2328">,</span> encoding<span style="color:#0550ae">=</span><span style="color:#0a3069">&#34;utf-8-sig&#34;</span><span style="color:#1f2328">,</span> newline<span style="color:#0550ae">=</span><span style="color:#0a3069">&#34;&#34;</span><span style="color:#1f2328">)</span> <span style="color:#cf222e">as</span> f<span style="color:#1f2328">:</span> 
+</span></span><span style="display:flex;"><span>    writer <span style="color:#0550ae">=</span> csv<span style="color:#0550ae">.</span>DictWriter<span style="color:#1f2328">(</span>f<span style="color:#1f2328">,</span> fieldnames<span style="color:#0550ae">=</span>csv_headers<span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>    writer<span style="color:#0550ae">.</span>writeheader<span style="color:#1f2328">()</span>
+</span></span><span style="display:flex;"><span>    <span style="color:#cf222e">for</span> key <span style="color:#0550ae">in</span> tqdm<span style="color:#1f2328">(</span>receipt_keys<span style="color:#1f2328">,</span> desc<span style="color:#0550ae">=</span><span style="color:#0a3069">&#34;Processing receipts&#34;</span><span style="color:#1f2328">):</span> 
+</span></span><span style="display:flex;"><span>        receipt_details_body <span style="color:#0550ae">=</span> <span style="color:#1f2328">{</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#0a3069">&#34;operationName&#34;</span><span style="color:#1f2328">:</span> <span style="color:#0a3069">&#34;ReceiptDetails&#34;</span><span style="color:#1f2328">,</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#0a3069">&#34;query&#34;</span><span style="color:#1f2328">:</span> <span style="color:#0a3069">&#34;query ReceiptDetails($key: String!) {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  receiptV2(key: $key) {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    key</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    content {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      header {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        totalPurchaseAmount</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        subAmounts</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        isoDate</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        formattedDate</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        text</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        labels {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          type</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          text</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        logo {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          publicUrl</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      footer {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        text</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      items {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        allItems {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          text</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          items {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            text</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            type</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            ... on ProductListItem {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              ...productFields</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            ... on GeneralDepositListItem {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              money {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">                formatted</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              isRefund</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              description</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              text</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            ... on GeneralDiscountListItem {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              money {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">                formatted</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              isRefund</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              text</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        noBonusItems {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          text</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          items {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            type</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            ... on ProductListItem {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              ...productFields</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        returnedItems {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          text</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          items {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            type</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            ... on ProductReturnListItem {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              name</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              money {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">                formatted</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              quantityCost {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">                formatted</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              deposits {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">                description</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">                money {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">                  formatted</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">                }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">                isRefund</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              costModifiers {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">                description</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">                money {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">                  formatted</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">                }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">                isRefund</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              connectedReceipt {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">                receiptKey</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">                description</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">                isParentReceipt</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              identifiers</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              text</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      storeInformation {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        text</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        storeInformation {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          property</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          value</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          subRows {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            property</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            value</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      paymentInformation {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        text</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        totals {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          text</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          totals {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            property</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            value</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            subRows {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              property</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              value</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        paymentMethods {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          text</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          methods {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            type</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            information {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              property</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              value</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              subRows {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">                property</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">                value</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        customer {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          text</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          customer {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            property</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            value</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            subRows {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              property</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              value</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        cashRegister {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          text</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          cashRegister {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            property</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            value</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            subRows {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              property</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">              value</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">            }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">          }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    campaigns {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      image {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">        publicUrl</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      title</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      key</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      height</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      width</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      destinationUrl</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    sender {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      name</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      key</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    attributes {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      isUpdatedWithReturns</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">}</span><span style="color:#0a3069">\n\n</span><span style="color:#0a3069">fragment productFields on ProductListItem {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  name</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  money {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    formatted</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  quantityCost {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    formatted</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  deposits {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    description</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    money {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      formatted</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    isRefund</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  costModifiers {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    description</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    money {</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">      formatted</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">    isRefund</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  }</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  identifiers</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">  text</span><span style="color:#0a3069">\n</span><span style="color:#0a3069">}&#34;</span><span style="color:#1f2328">,</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#0a3069">&#34;variables&#34;</span><span style="color:#1f2328">:</span> <span style="color:#1f2328">{</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#0a3069">&#34;key&#34;</span><span style="color:#1f2328">:</span> <span style="color:#0a3069">f</span><span style="color:#0a3069">&#34;</span><span style="color:#0a3069">{</span>key<span style="color:#0a3069">}</span><span style="color:#0a3069">&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#1f2328">}</span>
+</span></span><span style="display:flex;"><span>        <span style="color:#1f2328">}</span>
+</span></span><span style="display:flex;"><span>        response <span style="color:#0550ae">=</span> requests<span style="color:#0550ae">.</span>post<span style="color:#1f2328">(</span>url<span style="color:#1f2328">,</span> json<span style="color:#0550ae">=</span>receipt_details_body<span style="color:#1f2328">,</span> headers<span style="color:#0550ae">=</span>headers<span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>        result <span style="color:#0550ae">=</span> response<span style="color:#0550ae">.</span>json<span style="color:#1f2328">()</span>
+</span></span><span style="display:flex;"><span>        receipt <span style="color:#0550ae">=</span> result<span style="color:#1f2328">[</span><span style="color:#0a3069">&#34;data&#34;</span><span style="color:#1f2328">][</span><span style="color:#0a3069">&#34;receiptV2&#34;</span><span style="color:#1f2328">][</span><span style="color:#0a3069">&#34;content&#34;</span><span style="color:#1f2328">]</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>        items <span style="color:#0550ae">=</span> receipt<span style="color:#1f2328">[</span><span style="color:#0a3069">&#34;items&#34;</span><span style="color:#1f2328">][</span><span style="color:#0a3069">&#34;allItems&#34;</span><span style="color:#1f2328">][</span><span style="color:#0a3069">&#34;items&#34;</span><span style="color:#1f2328">]</span>
+</span></span><span style="display:flex;"><span>        store_name <span style="color:#0550ae">=</span> receipt<span style="color:#1f2328">[</span><span style="color:#0a3069">&#34;storeInformation&#34;</span><span style="color:#1f2328">][</span><span style="color:#0a3069">&#34;storeInformation&#34;</span><span style="color:#1f2328">][</span><span style="color:#0550ae">0</span><span style="color:#1f2328">][</span><span style="color:#0a3069">&#34;property&#34;</span><span style="color:#1f2328">]</span>
+</span></span><span style="display:flex;"><span>        purchase_date <span style="color:#0550ae">=</span> receipt<span style="color:#1f2328">[</span><span style="color:#0a3069">&#34;header&#34;</span><span style="color:#1f2328">][</span><span style="color:#0a3069">&#34;formattedDate&#34;</span><span style="color:#1f2328">]</span>
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        <span style="color:#cf222e">for</span> item <span style="color:#0550ae">in</span> items<span style="color:#1f2328">:</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#cf222e">if</span> <span style="color:#0a3069">&#34;name&#34;</span> <span style="color:#0550ae">not</span> <span style="color:#0550ae">in</span> item<span style="color:#1f2328">:</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#cf222e">continue</span>
+</span></span><span style="display:flex;"><span>            name <span style="color:#0550ae">=</span> item<span style="color:#1f2328">[</span><span style="color:#0a3069">&#34;name&#34;</span><span style="color:#1f2328">]</span>
+</span></span><span style="display:flex;"><span>            product_amount <span style="color:#0550ae">=</span> item<span style="color:#1f2328">[</span><span style="color:#0a3069">&#34;money&#34;</span><span style="color:#1f2328">][</span><span style="color:#0a3069">&#34;formatted&#34;</span><span style="color:#1f2328">]</span>
+</span></span><span style="display:flex;"><span>            product_amount_numeric <span style="color:#0550ae">=</span> <span style="color:#6639ba">float</span><span style="color:#1f2328">(</span>item<span style="color:#1f2328">[</span><span style="color:#0a3069">&#34;money&#34;</span><span style="color:#1f2328">][</span><span style="color:#0a3069">&#34;formatted&#34;</span><span style="color:#1f2328">]</span><span style="color:#0550ae">.</span>replace<span style="color:#1f2328">(</span><span style="color:#0a3069">&#34;,&#34;</span><span style="color:#1f2328">,</span> <span style="color:#0a3069">&#34;.&#34;</span><span style="color:#1f2328">)</span><span style="color:#0550ae">.</span>replace<span style="color:#1f2328">(</span><span style="color:#0a3069">&#34;kr&#34;</span><span style="color:#1f2328">,</span> <span style="color:#0a3069">&#34;&#34;</span><span style="color:#1f2328">))</span>
+</span></span><span style="display:flex;"><span>            writer<span style="color:#0550ae">.</span>writerow<span style="color:#1f2328">({</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#0a3069">&#34;Primary Key&#34;</span><span style="color:#1f2328">:</span> <span style="color:#0a3069">f</span><span style="color:#0a3069">&#34;</span><span style="color:#0a3069">{</span>primary_key_count<span style="color:#0a3069">}</span><span style="color:#0a3069">&#34;</span><span style="color:#1f2328">,</span>
+</span></span><span style="display:flex;"><span>                <span style="color:#0a3069">&#34;Receipt Key&#34;</span><span style="color:#1f2328">:</span> <span style="color:#0a3069">f</span><span style="color:#0a3069">&#34;</span><span style="color:#0a3069">{</span>key<span style="color:#0a3069">}</span><span style="color:#0a3069">&#34;</span><span style="color:#1f2328">,</span> 
+</span></span><span style="display:flex;"><span>                <span style="color:#0a3069">&#34;Purchase Date&#34;</span><span style="color:#1f2328">:</span> <span style="color:#0a3069">f</span><span style="color:#0a3069">&#34;</span><span style="color:#0a3069">{</span>purchase_date<span style="color:#0a3069">}</span><span style="color:#0a3069">&#34;</span><span style="color:#1f2328">,</span>    
+</span></span><span style="display:flex;"><span>                <span style="color:#0a3069">&#34;Store Name&#34;</span><span style="color:#1f2328">:</span> <span style="color:#0a3069">f</span><span style="color:#0a3069">&#34;</span><span style="color:#0a3069">{</span>store_name<span style="color:#0a3069">}</span><span style="color:#0a3069">&#34;</span><span style="color:#1f2328">,</span> 
+</span></span><span style="display:flex;"><span>                <span style="color:#0a3069">&#34;Item&#34;</span><span style="color:#1f2328">:</span> <span style="color:#0a3069">f</span><span style="color:#0a3069">&#34;</span><span style="color:#0a3069">{</span>name<span style="color:#0a3069">}</span><span style="color:#0a3069">&#34;</span><span style="color:#1f2328">,</span> 
+</span></span><span style="display:flex;"><span>                <span style="color:#0a3069">&#34;Product Amount&#34;</span><span style="color:#1f2328">:</span> <span style="color:#0a3069">f</span><span style="color:#0a3069">&#34;</span><span style="color:#0a3069">{</span>product_amount<span style="color:#0a3069">}</span><span style="color:#0a3069">&#34;</span><span style="color:#1f2328">,</span> 
+</span></span><span style="display:flex;"><span>                <span style="color:#0a3069">&#34;Category&#34;</span><span style="color:#1f2328">:</span> <span style="color:#0a3069">&#34;None&#34;</span><span style="color:#1f2328">,</span> 
+</span></span><span style="display:flex;"><span>                <span style="color:#0a3069">&#34;Product Amount Numeric&#34;</span><span style="color:#1f2328">:</span> <span style="color:#0a3069">f</span><span style="color:#0a3069">&#34;</span><span style="color:#0a3069">{</span>product_amount_numeric<span style="color:#0a3069">}</span><span style="color:#0a3069">&#34;</span>
+</span></span><span style="display:flex;"><span>            <span style="color:#1f2328">})</span>
+</span></span><span style="display:flex;"><span>            primary_key_count <span style="color:#0550ae">+=</span> <span style="color:#0550ae">1</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>df <span style="color:#0550ae">=</span> pd<span style="color:#0550ae">.</span>read_csv<span style="color:#1f2328">(</span>csv_file_path<span style="color:#1f2328">,</span> encoding<span style="color:#0550ae">=</span><span style="color:#0a3069">&#34;utf-8-sig&#34;</span><span style="color:#1f2328">)</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Now, I have a wonderful little CSV file that I can analyze to find purchase patterns! 🤩</p>
+<hr>
+
+        </div>
+        <div class="post_extra mb-2">
+          
+<div class="copy" data-before="Share Story" data-after="Link Copied">
+  <svg class="icon">
+    <use xlink:href="#copy"></use>
+  </svg>
+</div>
+        </div>
+        <div>
+        
+        </div>
+      </div>
+    </div>
+    <a href=http://localhost:51559/ class="post_nav"><span class="post_next">Latest Posts
+      <svg class="icon icon_scale">
+        <use xlink:href="#double-arrow"></use>
+      </svg>
+    </span></a>
+  </div>
+
+    </main>
+    <footer class="footer wrap pale">
+  <p>&copy;&nbsp;<span class="year"></span>&nbsp;Project Showcase</p>
+  <p class="attribution upcase">Designed by  <a href = '<no value>' target = '_blank' title = 'Linkedin Profile' rel = 'nonopener'><no value></a></p>
+</footer>
+
+
+<script src="http://localhost:51559/js/index.min.3c48c90d34b8abe802535bec19bab1a3550a46e6f3a82f6259147166aaf1247194f173fb7ca09b2f8fd99bca457d6b47bead473f0f631055c303826c9ca94c61.js"></script>
+
+    <svg width="0" height="0" class="hidden">
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 699.428 699.428" id="copy">
+    <path d="M502.714 0H240.428C194.178 0 153 42.425 153 87.429l-25.267.59c-46.228 0-84.019 41.834-84.019 86.838V612c0 45.004 41.179 87.428 87.429 87.428H459c46.249 0 87.428-42.424 87.428-87.428h21.857c46.25 0 87.429-42.424 87.429-87.428v-349.19L502.714 0zM459 655.715H131.143c-22.95 0-43.714-21.441-43.714-43.715V174.857c0-22.272 18.688-42.993 41.638-42.993l23.933-.721v393.429C153 569.576 194.178 612 240.428 612h262.286c0 22.273-20.765 43.715-43.714 43.715zm153-131.143c0 22.271-20.765 43.713-43.715 43.713H240.428c-22.95 0-43.714-21.441-43.714-43.713V87.429c0-22.272 20.764-43.714 43.714-43.714H459c-.351 50.337 0 87.975 0 87.975 0 45.419 40.872 86.882 87.428 86.882H612v306zm-65.572-349.715c-23.277 0-43.714-42.293-43.714-64.981V44.348L612 174.857h-65.572zm-43.714 131.537H306c-12.065 0-21.857 9.77-21.857 21.835 0 12.065 9.792 21.835 21.857 21.835h196.714c12.065 0 21.857-9.771 21.857-21.835 0-12.065-9.792-21.835-21.857-21.835zm0 109.176H306c-12.065 0-21.857 9.77-21.857 21.834 0 12.066 9.792 21.836 21.857 21.836h196.714c12.065 0 21.857-9.77 21.857-21.836 0-12.064-9.792-21.834-21.857-21.834z"></path>
+  </symbol>
+  <symbol viewBox="0 0 53 42" xmlns="http://www.w3.org/2000/svg" id="double-arrow">
+    <path d="M.595 39.653a1.318 1.318 0 0 1 0-1.864L16.55 21.833a1.318 1.318 0 0 0 0-1.863L.595 4.014a1.318 1.318 0 0 1 0-1.863L2.125.62a1.318 1.318 0 0 1 1.864 0l19.35 19.349a1.318 1.318 0 0 1 0 1.863l-19.35 19.35a1.318 1.318 0 0 1-1.863 0zm29 0a1.318 1.318 0 0 1 0-1.864L45.55 21.833a1.318 1.318 0 0 0 0-1.863L29.595 4.014a1.318 1.318 0 0 1 0-1.863l1.53-1.53a1.318 1.318 0 0 1 1.864 0l19.35 19.349a1.318 1.318 0 0 1 0 1.863l-19.35 19.35a1.318 1.318 0 0 1-1.863 0z"></path>
+  </symbol>
+</svg>
+  </body>
+</html>
