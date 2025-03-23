@@ -2,17 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Project Showcase</title>
-    <link>http://localhost:52344/NewsroomBlog/</link>
+    <link>http://localhost:1313/NewsroomBlog/</link>
     <description>Recent content on Project Showcase</description>
     <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 07 Feb 2025 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:52344/NewsroomBlog/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/NewsroomBlog/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Clustering Of Receipts and Market Basket Analysis</title>
+      <link>http://localhost:1313/NewsroomBlog/posts/clustering_kivra/</link>
+      <pubDate>Fri, 07 Feb 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/NewsroomBlog/posts/clustering_kivra/</guid>
+      <description>&lt;p&gt;After extracting my receipts by reverse engineering Kivra&amp;rsquo;s API, it was time for the main mission -to actually get insight from them. Uncover patterns that could help me make better purchase decisions.&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;so-did-we-uncover-any-patterns&#34;&gt;So, did we uncover any patterns?&lt;/h2&gt;&#xA;&lt;p&gt;&lt;strong&gt;YES!&lt;/strong&gt; we did with the help of categorizing items with LLMs, item graphs, Kmeans clustering and market basket analysis to uncover the patterns.&lt;/p&gt;&#xA;&lt;p&gt;&lt;em&gt;data analysis&lt;/em&gt;&#xA;&lt;em&gt;graph&lt;/em&gt;&#xA;&lt;em&gt;clustering&lt;/em&gt;&#xA;&lt;em&gt;market basket analysis&lt;/em&gt;&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;step-1-categorize-items-with-llm-large-language-models&#34;&gt;Step 1️: Categorize Items with LLM (Large Language Models)&lt;/h2&gt;&#xA;&lt;p&gt;OpenAIs API was used and the categories was predefined. To not use more tokens than necessary, we&amp;rsquo;re letting gpt-4 categorize the items in batches of 50, that means in each prompt gpt-4 outputs 50 categories (thus inputting 50 rows). The function that prompts the structured output:&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Reverse Engineering Kivra&#39;s API</title>
-      <link>http://localhost:52344/NewsroomBlog/posts/kivra/</link>
+      <link>http://localhost:1313/NewsroomBlog/posts/kivra/</link>
       <pubDate>Fri, 07 Feb 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:52344/NewsroomBlog/posts/kivra/</guid>
+      <guid>http://localhost:1313/NewsroomBlog/posts/kivra/</guid>
       <description>&lt;p&gt;Kivra is a digital service that many companies use to send documents to Swedish citizens, such as bills, tax notices and an occasional reminder such as “Hey, it’s time for a doctor visit!”  letting you know you’re not invincible anymore.&lt;/p&gt;&#xA;&lt;p&gt;It also collects all receipts of purchases you’ve made, if you want them to! The coolest part? You automatically stop receiving paper documents in your mailbox  or receipts in-store, because you’ve signed up to get them digitally instead! It’s the perfect gift for adulthood. 😉&lt;/p&gt;</description>
     </item>
   </channel>

@@ -2,17 +2,20 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:52344/NewsroomBlog/posts/</loc>
+    <loc>http://localhost:1313/NewsroomBlog/posts/clustering_kivra/</loc>
     <lastmod>2025-02-07T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:52344/NewsroomBlog/</loc>
+    <loc>http://localhost:1313/NewsroomBlog/posts/</loc>
     <lastmod>2025-02-07T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:52344/NewsroomBlog/posts/kivra/</loc>
+    <loc>http://localhost:1313/NewsroomBlog/</loc>
     <lastmod>2025-02-07T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:52344/NewsroomBlog/categories/</loc>
+    <loc>http://localhost:1313/NewsroomBlog/posts/kivra/</loc>
+    <lastmod>2025-02-07T00:00:00+00:00</lastmod>
   </url><url>
-    <loc>http://localhost:52344/NewsroomBlog/tags/</loc>
+    <loc>http://localhost:1313/NewsroomBlog/categories/</loc>
+  </url><url>
+    <loc>http://localhost:1313/NewsroomBlog/tags/</loc>
   </url>
 </urlset>

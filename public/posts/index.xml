@@ -2,17 +2,24 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Posts on Project Showcase</title>
-    <link>http://localhost:52344/NewsroomBlog/posts/</link>
+    <link>http://localhost:1313/NewsroomBlog/posts/</link>
     <description>Recent content in Posts on Project Showcase</description>
     <generator>Hugo</generator>
     <language>en-us</language>
     <lastBuildDate>Fri, 07 Feb 2025 00:00:00 +0000</lastBuildDate>
-    <atom:link href="http://localhost:52344/NewsroomBlog/posts/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/NewsroomBlog/posts/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Clustering Of Receipts and Market Basket Analysis</title>
+      <link>http://localhost:1313/NewsroomBlog/posts/clustering_kivra/</link>
+      <pubDate>Fri, 07 Feb 2025 00:00:00 +0000</pubDate>
+      <guid>http://localhost:1313/NewsroomBlog/posts/clustering_kivra/</guid>
+      <description>&lt;p&gt;After extracting my receipts by reverse engineering Kivra&amp;rsquo;s API, it was time for the main mission -to actually get insight from them. Uncover patterns that could help me make better purchase decisions.&lt;/p&gt;&#xA;&lt;hr&gt;&#xA;&lt;h2 id=&#34;if-youre-like-me-youve-probably-wondered&#34;&gt;If you’re like me, you’ve probably wondered:&lt;/h2&gt;&#xA;&lt;ul&gt;&#xA;&lt;li&gt;&lt;strong&gt;Can I uncover patterns/trends in my purchase history to make better financial decisions?&lt;/strong&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Am I a responsible adult or just really good at pretending? 🤔&lt;/strong&gt;&lt;/li&gt;&#xA;&lt;li&gt;&lt;strong&gt;Can I track my receipts like some kind of financial detective?&lt;/strong&gt;&lt;/li&gt;&#xA;&lt;/ul&gt;&#xA;&lt;p&gt;The answer is &lt;strong&gt;YES!&lt;/strong&gt;  But here’s the twist—Kivra doesn’t exactly hand over this data in a neat little export button. So, like any curious soul (or mildly obsessive person), I reverse-engineered my way into grabbing my own receipts programmatically.&lt;/p&gt;</description>
+    </item>
     <item>
       <title>Reverse Engineering Kivra&#39;s API</title>
-      <link>http://localhost:52344/NewsroomBlog/posts/kivra/</link>
+      <link>http://localhost:1313/NewsroomBlog/posts/kivra/</link>
       <pubDate>Fri, 07 Feb 2025 00:00:00 +0000</pubDate>
-      <guid>http://localhost:52344/NewsroomBlog/posts/kivra/</guid>
+      <guid>http://localhost:1313/NewsroomBlog/posts/kivra/</guid>
       <description>&lt;p&gt;Kivra is a digital service that many companies use to send documents to Swedish citizens, such as bills, tax notices and an occasional reminder such as “Hey, it’s time for a doctor visit!”  letting you know you’re not invincible anymore.&lt;/p&gt;&#xA;&lt;p&gt;It also collects all receipts of purchases you’ve made, if you want them to! The coolest part? You automatically stop receiving paper documents in your mailbox  or receipts in-store, because you’ve signed up to get them digitally instead! It’s the perfect gift for adulthood. 😉&lt;/p&gt;</description>
     </item>
   </channel>

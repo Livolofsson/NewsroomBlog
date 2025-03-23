@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en" >
+  <head><script src="/NewsroomBlog/livereload.js?mindelay=10&amp;v=2&amp;port=1313&amp;path=NewsroomBlog/livereload" data-no-instant defer></script>
+  <title>Clustering of receipts and market basket analysis | Project Showcase</title>
+  <meta charset='utf-8'>
+  <link rel="stylesheet" href="/NewsroomBlog/css/custom.css">
+  <meta name="viewport" content ="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+
+  
+  
+<meta name="keywords" content="Project Showcase">
+<meta property="og:locale" content='en_US'>
+<meta property="og:type" content="article">
+<meta property="og:title" content="Clustering Of Receipts and Market Basket Analysis">
+<meta property="og:description" content="After extracting my receipts by reverse engineering Kivra&rsquo;s API, it was time for the main mission -to actually get insight from them. Uncover patterns">
+<meta property="og:url" content="http://localhost:1313/NewsroomBlog/posts/clustering_kivra/">
+<meta property="og:image" content="http://localhost:1313/NewsroomBlog/images/images/dalle.webp">
+<link rel="canonical" href="http://localhost:1313/NewsroomBlog/posts/clustering_kivra/">
+
+<link rel="apple-touch-icon" sizes="180x180" href='http://localhost:1313/NewsroomBlog/apple-touch-icon.png'>
+<link rel="icon" type="image/png" sizes="32x32" href='http://localhost:1313/NewsroomBlog/favicon-32x32.png'>
+<link rel="icon" type="image/png" sizes='16x16' href='http://localhost:1313/NewsroomBlog/favicon-16x16.png'>
+<link rel="manifest" href='http://localhost:1313/NewsroomBlog/site.webmanifest'>
+
+<link rel="stylesheet" href="http://localhost:1313/NewsroomBlog/css/styles.648e60c6d86809f863ae1346848574b9c685732794e7851c7d3e557de9ddd293bc1c209f963d5041785c2fd4268470bdfde453a99f550b655d1b4f825eed4682.css" integrity="sha512-ZI5gxthoCfhjrhNGhIV0ucaFcyeU54UcfT5Vfend0pO8HCCflj1QQXhcL9QmhHC9/eRTqZ9VC2VdG0&#43;CXu1Ggg==">
+</head>
+
+  <body>
+    <div class="nav-drop">
+  <div class="nav-body">
+    <div class="nav-close"></div><div class="color_mode">
+  <label for="mode">Toggle Dark Mode</label>
+  <input type="checkbox" class="color_choice" id="mode">
+</div>
+
+  </div>
+</div>
+<header class="nav">
+  <nav class="nav-menu">
+    <a href=http://localhost:1313/NewsroomBlog/ class="nav-brand nav_item">
+        Project Showcase</a>
+    <div class="nav_bar-wrap">
+      <div class="nav_bar"></div>
+    </div>
+  </nav>
+</header>
+
+    <main>
+      
+  <div class="wrap mt post">
+    <div><p class=post_date>07. February 2025</p>
+      <h1 class="post_title">Clustering Of Receipts and Market Basket Analysis</h1>
+      <div class="post_body">
+        <div class="post_inner">
+        
+        
+          <img src="http://localhost:1313/NewsroomBlog/images/dalle.webp" alt="images/dalle.webp" class="post_thumbnail">
+        
+          <p>After extracting my receipts by reverse engineering Kivra&rsquo;s API, it was time for the main mission -to actually get insight from them. Uncover patterns that could help me make better purchase decisions.</p>
+<hr>
+<h2 id="so-did-we-uncover-any-patterns">So, did we uncover any patterns?</h2>
+<p><strong>YES!</strong> we did with the help of categorizing items with LLMs, item graphs, Kmeans clustering and market basket analysis to uncover the patterns.</p>
+<p><em>data analysis</em>
+<em>graph</em>
+<em>clustering</em>
+<em>market basket analysis</em></p>
+<hr>
+<h2 id="step-1-categorize-items-with-llm-large-language-models">Step 1️: Categorize Items with LLM (Large Language Models)</h2>
+<p>OpenAIs API was used and the categories was predefined. To not use more tokens than necessary, we&rsquo;re letting gpt-4 categorize the items in batches of 50, that means in each prompt gpt-4 outputs 50 categories (thus inputting 50 rows). The function that prompts the structured output:</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>    #categories llm has to choose between
+</span></span><span style="display:flex;"><span>    categories = [&#34;fruit&#34;, &#34;vegetables&#34;, &#34;snacks&#34;, &#34;meat&#34;, &#34;household&#34;, &#34;dairy&#34;, &#34;bread&#34;, &#34;other&#34;]
+</span></span><span style="display:flex;"><span>    batch_size = 50  
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    def generate_prompt(batch_items):
+</span></span><span style="display:flex;"><span>        &#34;&#34;&#34;
+</span></span><span style="display:flex;"><span>        Generate a prompt for categorizing items.
+</span></span><span style="display:flex;"><span>        &#34;&#34;&#34;
+</span></span><span style="display:flex;"><span>        item_list = &#34;\n&#34;.join([f&#34;{item[&#39;primary_key&#39;]}: {item[&#39;name&#39;]}&#34; for item in batch_items])
+</span></span><span style="display:flex;"><span>        prompt = (
+</span></span><span style="display:flex;"><span>            f&#34;You are a categorization assistant. Categorize the following items into one of the predefined categories: &#34;
+</span></span><span style="display:flex;"><span>            f&#34;{&#39;, &#39;.join(categories)}.\n\n&#34;
+</span></span><span style="display:flex;"><span>            f&#34;Items:\n{item_list}\n\n&#34;
+</span></span><span style="display:flex;"><span>            f&#34;Respond with the format:\n&#34;
+</span></span><span style="display:flex;"><span>            f&#34;primary_key: category\n\n&#34;
+</span></span><span style="display:flex;"><span>        )
+</span></span><span style="display:flex;"><span>        return prompt
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>For the actual generation of the categories another function is defined that calls OpenAIs API and uses the prompting function to structure the outpus. It returns the categorized items in a list. Some items that involved &ldquo;Zero&rdquo; or &ldquo;julmust&rdquo; are treated as &ldquo;snacks&rdquo; specifically, otherwise she outputed them as &ldquo;other&rdquo; but those are definitly in the &ldquo;snacks&rdquo; category and especially important in our household as I suspect that we drink a bit too much soda&hellip;</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>    def categorize_batch(batch):
+</span></span><span style="display:flex;"><span>        &#34;&#34;&#34;
+</span></span><span style="display:flex;"><span>        Categorize a batch of items using GPT.
+</span></span><span style="display:flex;"><span>        &#34;&#34;&#34;
+</span></span><span style="display:flex;"><span>        batch_items = [{&#34;primary_key&#34;: int(row[&#34;Primary Key&#34;]), &#34;name&#34;: row[&#34;Item&#34;]} for _, row in batch.iterrows()]
+</span></span><span style="display:flex;"><span>        prompt = generate_prompt(batch_items)
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>        try:
+</span></span><span style="display:flex;"><span>            response = openai.ChatCompletion.create(
+</span></span><span style="display:flex;"><span>                model=&#34;gpt-4&#34;,  
+</span></span><span style="display:flex;"><span>                messages=[
+</span></span><span style="display:flex;"><span>                    {&#34;role&#34;: &#34;system&#34;, &#34;content&#34;: &#34;You are an assistant that categorizes items into predefined categories. If the item includes &#39;Zero&#39; or &#39;julmust&#39; categorize it as snacks.&#34;},
+</span></span><span style="display:flex;"><span>                    {&#34;role&#34;: &#34;user&#34;, &#34;content&#34;: prompt}
+</span></span><span style="display:flex;"><span>                ],
+</span></span><span style="display:flex;"><span>                max_tokens=500,
+</span></span><span style="display:flex;"><span>                temperature=0
+</span></span><span style="display:flex;"><span>            )
+</span></span><span style="display:flex;"><span>        
+</span></span><span style="display:flex;"><span>            raw_output = response[&#34;choices&#34;][0][&#34;message&#34;][&#34;content&#34;].strip()
+</span></span><span style="display:flex;"><span>            print(f&#34;Raw output: {raw_output}&#34;) 
+</span></span><span style="display:flex;"><span>            categorized_items = []
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>            for line in raw_output.split(&#34;\n&#34;):
+</span></span><span style="display:flex;"><span>                if &#34;:&#34; in line:
+</span></span><span style="display:flex;"><span>                    primary_key, category = line.split(&#34;:&#34;, 1)
+</span></span><span style="display:flex;"><span>                    categorized_items.append({
+</span></span><span style="display:flex;"><span>                        &#34;primary_key&#34;: int(primary_key.strip()),
+</span></span><span style="display:flex;"><span>                        &#34;category&#34;: category.strip()
+</span></span><span style="display:flex;"><span>                    })
+</span></span><span style="display:flex;"><span>            
+</span></span><span style="display:flex;"><span>            return categorized_items
+</span></span><span style="display:flex;"><span>        except Exception as e:
+</span></span><span style="display:flex;"><span>            print(f&#34;Error during categorization: {e}&#34;)
+</span></span><span style="display:flex;"><span>            return []
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>In the end the script calls on the categorize_batch() function with the batch size 50 to start the categorization and merge them together with the old csv:</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>    #processing in batches to reduce cred
+</span></span><span style="display:flex;"><span>    categorized_results = []
+</span></span><span style="display:flex;"><span>    print(&#34;Starting categorization process...&#34;)
+</span></span><span style="display:flex;"><span>    for i in tqdm(range(0, len(df), batch_size), desc=&#34;Processing batches&#34;):
+</span></span><span style="display:flex;"><span>        batch = df.iloc[i:i + batch_size]
+</span></span><span style="display:flex;"><span>        batch_results = categorize_batch(batch)
+</span></span><span style="display:flex;"><span>        if batch_results:
+</span></span><span style="display:flex;"><span>            categorized_results.extend(batch_results)
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>    #definied categories back to csv
+</span></span><span style="display:flex;"><span>    categorized_df = pd.DataFrame(categorized_results)
+</span></span><span style="display:flex;"><span>    df = df.merge(categorized_df, left_on=&#34;Primary Key&#34;, right_on=&#34;primary_key&#34;, how=&#34;left&#34;)
+</span></span><span style="display:flex;"><span>    df[&#34;Category&#34;] = df[&#34;category&#34;].combine_first(df[&#34;Category&#34;])
+</span></span><span style="display:flex;"><span>    df.drop(columns=[&#34;category&#34;, &#34;primary_key&#34;], inplace=True)
+</span></span><span style="display:flex;"><span>    
+</span></span><span style="display:flex;"><span>    df.to_csv(updated_csv_file_path, index=False)
+</span></span><span style="display:flex;"><span>    print(f&#34;Updated CSV saved to {updated_csv_file_path}.&#34;)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>Now we have a new column &ldquo;Category&rdquo; for each item in the receipt.</p>
+<h2 id="step-2-exploratory-data-analysis">Step 2️: Exploratory Data Analysis</h2>
+<p>Okay, time to look into the data we&rsquo;re working with. This is important because it helps us understand the data, relationships, outliers etc, before doing modeling such as clustering or market analysis.</p>
+<p>After checking if there where duplicates and the type of each column, the following relationship was checked:</p>
+<ol>
+<li>Distribution of Purchase Amounts
+Prepocessing that had to be done here was to convert &ldquo;Product Amount&rdquo; from string with comma (e.g. &ldquo;14.8&rdquo;) to float (e.g. 14.8)</li>
+</ol>
+<figure><img src="/NewsroomBlog/posts/clustering_kivra/distribution_of_purchase_amount.png"><figcaption>
+      <h4>Postman Debugging</h4>
+    </figcaption>
+</figure>
+
+<p>The majority of purchases were small, typically under 50 SEK, indicating that most transactions are quick, low-cost items rather than full grocery hauls. However, there is a long tail of larger purchases, suggesting occasional bulk or special-purpose shopping.</p>
+<ol start="2">
+<li>Shopping Hours Distribution
+Extracted the hour from &ldquo;Purchase Date&rdquo; (e.g. &ldquo;2024-11-29, 21:05&rdquo;) using</li>
+</ol>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>data[&#34;Hour&#34;] = data[&#34;Datetime&#34;].dt.hour
+</span></span></code></pre></td></tr></table>
+</div>
+</div><figure><img src="/NewsroomBlog/posts/clustering_kivra/shopping_hour_distribution.png"><figcaption>
+      <h4>Postman Debugging</h4>
+    </figcaption>
+</figure>
+
+<p>Most shopping occurred between 18:00 and 20:00, showing a strong evening peak. This likely reflects after-work shopping behavior.</p>
+<ol start="3">
+<li>Average spending per Day of the Week
+Converted date to weekday name using</li>
+</ol>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>data[&#34;DayOfWeek&#34;] = data[&#34;Datetime&#34;].dt.day_name()
+</span></span></code></pre></td></tr></table>
+</div>
+</div><figure><img src="/NewsroomBlog/posts/clustering_kivra/average_spending_per_day_of_the_week.png"><figcaption>
+      <h4>Postman Debugging</h4>
+    </figcaption>
+</figure>
+
+<p>Spending was highest on Sunday, Monday, and Friday, suggesting a behavioral pattern. It could be prepare for the week ahead (Monday), stock up for the weekend (Friday), or do larger shops at the end of the week (Sunday). However the peaks are very small.</p>
+<ol start="4">
+<li>Total spending by Store</li>
+</ol>
+<p>Grouped by &ldquo;Store Name&rdquo; and summed the &ldquo;Product Amount Numeric&rdquo;. It didn&rsquo;t provide much insight as all purchases was made from one store:</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>store_spending = raw_clustering_df.groupby(&#34;Store Name&#34;)[&#34;Product Amount Numeric&#34;].sum()
+</span></span></code></pre></td></tr></table>
+</div>
+</div><ol start="5">
+<li>Number of Purchases by Category</li>
+</ol>
+<figure><img src="/NewsroomBlog/posts/clustering_kivra/number_of_purchases_by_category.png"><figcaption>
+      <h4>Postman Debugging</h4>
+    </figcaption>
+</figure>
+
+<p>Snacks, dairy and vegetables were the most frequently purchased categories. These appear to be everyday staples or/and impulse buys.</p>
+<ol start="6">
+<li>Weekend vs Weekday Analysis
+Used &ldquo;DayOfWeek&rdquo; to determine IsWeekend and classified it as 1 or 0. The binary encoding was stored in a new column.</li>
+</ol>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>data[&#34;IsWeekend&#34;] = data[&#34;DayOfWeek&#34;].isin([&#34;Saturday&#34;, &#34;Sunday&#34;]).astype(int)
+</span></span></code></pre></td></tr></table>
+</div>
+</div><figure><img src="/NewsroomBlog/posts/clustering_kivra/total_spending_weekends_vs_weekdays.png"><figcaption>
+      <h4>Postman Debugging</h4>
+    </figcaption>
+</figure>
+
+<figure><img src="/NewsroomBlog/posts/clustering_kivra/average_spending_per_transaction.png"><figcaption>
+      <h4>Postman Debugging</h4>
+    </figcaption>
+</figure>
+
+<p>On weekends, average spending per transaction was higher, but the total spending was higher during weekdays. This suggests that we make larger but fewer purchases on weekends and more frequent smaller purchases during the week.</p>
+<ol start="7">
+<li>Feature Correlation Matrix: Between numeric features like hour, day, amount, etc.</li>
+</ol>
+<p>Selected only numeric columns such as Hour, Day, IsWeekend, Product Amount Numeric</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">1
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-fallback" data-lang="fallback"><span style="display:flex;"><span>numeric_df = raw_clustering_df.select_dtypes(include=[&#39;number&#39;])
+</span></span></code></pre></td></tr></table>
+</div>
+</div><figure><img src="/NewsroomBlog/posts/clustering_kivra/feature_correlation.png"><figcaption>
+      <h4>Postman Debugging</h4>
+    </figcaption>
+</figure>
+
+<p>No strong correlations were found between numeric features such as hour, day, weekend flag, or amount spent. This indicates that each feature adds independent value, making them all useful inputs for clustering without redundancy.</p>
+<h2 id="step-3-clustering">Step 3️: Clustering</h2>
+<p>Clustering is an unsupervised learning technique (which means that we do not know the classes each data point, receipt in this case, belong to from the beginning) that finds natural groupings, thus patterns, in the data.</p>
+<p>In this case, I&rsquo;d be nice to uncover behaviour patterns in myself so that I know what I should strive to (or avoid) to make better purchases, by means saving cash. Patterns could be, snack shopping in the evening, then maybe these purchases could be avoided by trying to make majority of purchases during day&hellip; because then the snack cost might decrease, etc.</p>
+<p>Some preprocessing of the data had to be done:</p>
+<ol>
+<li>Day of week and month went from dates to cosine, sin values to make them numerical and capture there cyclic nature.</li>
+<li>Time was translated to only hour and cosine and sin was used to translate hour to values that capture the cylic nature here as well.</li>
+<li>Product Amount was normalized using StandardScaler()</li>
+</ol>
+<p>The Elbow Method is a way to figure out how many clusters that are optimal for the data when the clustering will be done with KMeans. This is done by plotting &ldquo;inertia&rdquo; (within-cluster-error) against number of clusters. Where the change drops fastest, is the optimal number of clusters.</p>
+<figure><img src="/NewsroomBlog/posts/clustering_kivra/elbow.png"><figcaption>
+      <h4>Postman Debugging</h4>
+    </figcaption>
+</figure>
+
+<p>In this case the optimal number of clusters is four. Kmeans will now group similar data points into k = 4 clusters for this data.</p>
+<div class="highlight"><div style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;">
+<table style="border-spacing:0;padding:0;margin:0;border:0;"><tr><td style="vertical-align:top;padding:0;margin:0;border:0;">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 1
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 2
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 3
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 4
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 5
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 6
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 7
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 8
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f"> 9
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">10
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">11
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">12
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">13
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">14
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">15
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">16
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">17
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">18
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">19
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">20
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">21
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">22
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">23
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">24
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">25
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">26
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">27
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">28
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">29
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">30
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">31
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">32
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">33
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">34
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">35
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">36
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">37
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">38
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">39
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">40
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">41
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">42
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">43
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">44
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">45
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">46
+</span><span style="white-space:pre;-webkit-user-select:none;user-select:none;margin-right:0.4em;padding:0 0.4em 0 0.4em;color:#7f7f7f">47
+</span></code></pre></td>
+<td style="vertical-align:top;padding:0;margin:0;border:0;;width:100%">
+<pre tabindex="0" style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-python" data-lang="python"><span style="display:flex;"><span><span style="color:#57606a">####elbow method#####</span>
+</span></span><span style="display:flex;"><span>file_path <span style="color:#0550ae">=</span> <span style="color:#0a3069">&#34;C:/Users/astri/KivraReceipt/clustering_data_cyclical_onehot.csv&#34;</span>  <span style="color:#57606a"># Adjust if needed</span>
+</span></span><span style="display:flex;"><span>data_to_cluster <span style="color:#0550ae">=</span> pd<span style="color:#0550ae">.</span>read_csv<span style="color:#1f2328">(</span>file_path<span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#57606a">#Converting all columns to float (to ensure correct numerical processing)</span>
+</span></span><span style="display:flex;"><span>features <span style="color:#0550ae">=</span> data_to_cluster<span style="color:#0550ae">.</span>astype<span style="color:#1f2328">(</span><span style="color:#6639ba">float</span><span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>inertia <span style="color:#0550ae">=</span> <span style="color:#1f2328">[]</span>
+</span></span><span style="display:flex;"><span>K_range <span style="color:#0550ae">=</span> <span style="color:#6639ba">range</span><span style="color:#1f2328">(</span><span style="color:#0550ae">1</span><span style="color:#1f2328">,</span> <span style="color:#0550ae">11</span><span style="color:#1f2328">)</span> 
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#cf222e">for</span> k <span style="color:#0550ae">in</span> K_range<span style="color:#1f2328">:</span>
+</span></span><span style="display:flex;"><span>    kmeans <span style="color:#0550ae">=</span> KMeans<span style="color:#1f2328">(</span>n_clusters<span style="color:#0550ae">=</span>k<span style="color:#1f2328">,</span> random_state<span style="color:#0550ae">=</span><span style="color:#0550ae">42</span><span style="color:#1f2328">,</span> n_init<span style="color:#0550ae">=</span><span style="color:#0550ae">10</span><span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>    kmeans<span style="color:#0550ae">.</span>fit<span style="color:#1f2328">(</span>features<span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>    inertia<span style="color:#0550ae">.</span>append<span style="color:#1f2328">(</span>kmeans<span style="color:#0550ae">.</span>inertia_<span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#0550ae">.</span>figure<span style="color:#1f2328">(</span>figsize<span style="color:#0550ae">=</span><span style="color:#1f2328">(</span><span style="color:#0550ae">8</span><span style="color:#1f2328">,</span> <span style="color:#0550ae">5</span><span style="color:#1f2328">))</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#0550ae">.</span>plot<span style="color:#1f2328">(</span>K_range<span style="color:#1f2328">,</span> inertia<span style="color:#1f2328">,</span> marker<span style="color:#0550ae">=</span><span style="color:#0a3069">&#39;o&#39;</span><span style="color:#1f2328">,</span> linestyle<span style="color:#0550ae">=</span><span style="color:#0a3069">&#39;-&#39;</span><span style="color:#1f2328">,</span> color<span style="color:#0550ae">=</span><span style="color:#0a3069">&#39;blue&#39;</span><span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#0550ae">.</span>xlabel<span style="color:#1f2328">(</span><span style="color:#0a3069">&#34;Number of Clusters (k)&#34;</span><span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#0550ae">.</span>ylabel<span style="color:#1f2328">(</span><span style="color:#0a3069">&#34;Inertia (Sum of Squared Distances)&#34;</span><span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#0550ae">.</span>title<span style="color:#1f2328">(</span><span style="color:#0a3069">&#34;Elbow Method for Optimal k&#34;</span><span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#0550ae">.</span>xticks<span style="color:#1f2328">(</span>K_range<span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#0550ae">.</span>grid<span style="color:#1f2328">()</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#0550ae">.</span>show<span style="color:#1f2328">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#57606a">###########K-means with k=4################</span>
+</span></span><span style="display:flex;"><span>kmeans <span style="color:#0550ae">=</span> KMeans<span style="color:#1f2328">(</span>n_clusters<span style="color:#0550ae">=</span><span style="color:#0550ae">4</span><span style="color:#1f2328">,</span> random_state<span style="color:#0550ae">=</span><span style="color:#0550ae">42</span><span style="color:#1f2328">,</span> n_init<span style="color:#0550ae">=</span><span style="color:#0550ae">10</span><span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>data_to_cluster<span style="color:#1f2328">[</span><span style="color:#0a3069">&#34;Cluster&#34;</span><span style="color:#1f2328">]</span> <span style="color:#0550ae">=</span> kmeans<span style="color:#0550ae">.</span>fit_predict<span style="color:#1f2328">(</span>features<span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>centroids <span style="color:#0550ae">=</span> pd<span style="color:#0550ae">.</span>DataFrame<span style="color:#1f2328">(</span>kmeans<span style="color:#0550ae">.</span>cluster_centers_<span style="color:#1f2328">,</span> columns<span style="color:#0550ae">=</span>features<span style="color:#0550ae">.</span>columns<span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#0550ae">.</span>figure<span style="color:#1f2328">(</span>figsize<span style="color:#0550ae">=</span><span style="color:#1f2328">(</span><span style="color:#0550ae">6</span><span style="color:#1f2328">,</span><span style="color:#0550ae">5</span><span style="color:#1f2328">))</span>
+</span></span><span style="display:flex;"><span>data_to_cluster<span style="color:#1f2328">[</span><span style="color:#0a3069">&#34;Cluster&#34;</span><span style="color:#1f2328">]</span><span style="color:#0550ae">.</span>value_counts<span style="color:#1f2328">()</span><span style="color:#0550ae">.</span>sort_index<span style="color:#1f2328">()</span><span style="color:#0550ae">.</span>plot<span style="color:#1f2328">(</span>kind<span style="color:#0550ae">=</span><span style="color:#0a3069">&#34;bar&#34;</span><span style="color:#1f2328">,</span> color<span style="color:#0550ae">=</span><span style="color:#0a3069">&#34;blue&#34;</span><span style="color:#1f2328">,</span> edgecolor<span style="color:#0550ae">=</span><span style="color:#0a3069">&#34;black&#34;</span><span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#0550ae">.</span>xlabel<span style="color:#1f2328">(</span><span style="color:#0a3069">&#34;Cluster&#34;</span><span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#0550ae">.</span>ylabel<span style="color:#1f2328">(</span><span style="color:#0a3069">&#34;Number of Transactions&#34;</span><span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#0550ae">.</span>title<span style="color:#1f2328">(</span><span style="color:#0a3069">&#34;Number of Transactions Per Cluster&#34;</span><span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#0550ae">.</span>show<span style="color:#1f2328">()</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span><span style="color:#57606a">#reducing to 2 components for visualization (corr matrix showed not much correlation so PCA probably didn&#39;t help much)</span>
+</span></span><span style="display:flex;"><span>pca <span style="color:#0550ae">=</span> PCA<span style="color:#1f2328">(</span>n_components<span style="color:#0550ae">=</span><span style="color:#0550ae">2</span><span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>data_pca <span style="color:#0550ae">=</span> pca<span style="color:#0550ae">.</span>fit_transform<span style="color:#1f2328">(</span>features<span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#0550ae">.</span>figure<span style="color:#1f2328">(</span>figsize<span style="color:#0550ae">=</span><span style="color:#1f2328">(</span><span style="color:#0550ae">8</span><span style="color:#1f2328">,</span><span style="color:#0550ae">6</span><span style="color:#1f2328">))</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#0550ae">.</span>scatter<span style="color:#1f2328">(</span>data_pca<span style="color:#1f2328">[:,</span> <span style="color:#0550ae">0</span><span style="color:#1f2328">],</span> data_pca<span style="color:#1f2328">[:,</span> <span style="color:#0550ae">1</span><span style="color:#1f2328">],</span> c<span style="color:#0550ae">=</span>data_to_cluster<span style="color:#1f2328">[</span><span style="color:#0a3069">&#34;Cluster&#34;</span><span style="color:#1f2328">],</span> cmap<span style="color:#0550ae">=</span><span style="color:#0a3069">&#34;viridis&#34;</span><span style="color:#1f2328">,</span> alpha<span style="color:#0550ae">=</span><span style="color:#0550ae">0.6</span><span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#0550ae">.</span>xlabel<span style="color:#1f2328">(</span><span style="color:#0a3069">&#34;PCA Component 1&#34;</span><span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#0550ae">.</span>ylabel<span style="color:#1f2328">(</span><span style="color:#0a3069">&#34;PCA Component 2&#34;</span><span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#0550ae">.</span>title<span style="color:#1f2328">(</span><span style="color:#0a3069">&#34;Clusters Visualized in 2D Space (PCA)&#34;</span><span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#0550ae">.</span>colorbar<span style="color:#1f2328">(</span>label<span style="color:#0550ae">=</span><span style="color:#0a3069">&#34;Cluster&#34;</span><span style="color:#1f2328">)</span>
+</span></span><span style="display:flex;"><span>plt<span style="color:#0550ae">.</span>show<span style="color:#1f2328">()</span>
+</span></span></code></pre></td></tr></table>
+</div>
+</div><p>PCA (Principal Component Analysis) is a way to vizualize the clusters by reducing data with many dimensions, where a column is countet as one dimension, to less dimensions. The result was the following</p>
+<figure><img src="/NewsroomBlog/posts/clustering_kivra/clusters.png"><figcaption>
+      <h4>Postman Debugging</h4>
+    </figcaption>
+</figure>
+
+<p>However, looking at the correlation matrix from before, features were mostly uncorrelated. As PCA works by combining features to one by using the variance, if they don&rsquo;t have the same variance, the combination to get new features might not work very well.</p>
+<p>We can se some clusters do, even though they&rsquo;re overlapping. These could be analyzed further to see which features that are highly correlated in the clusters to understand purchase behaviour.</p>
+<h2 id="step-4-market-basket-analysis">Step 4️: Market Basket Analysis</h2>
+<h2 id="hahahugoshortcode81s9hbhb"><figure><img src="/NewsroomBlog/posts/clustering_kivra/market.png"><figcaption>
+      <h4>Postman Debugging</h4>
+    </figcaption>
+</figure>
+</h2>
+<h2 id="step-5-graph-items">Step 5: Graph Items</h2>
+<h2 id="hahahugoshortcode81s10hbhb"><figure><img src="/NewsroomBlog/posts/clustering_kivra/graph.png"><figcaption>
+      <h4>Postman Debugging</h4>
+    </figcaption>
+</figure>
+</h2>
+
+        </div>
+        <div class="post_extra mb-2">
+          
+<div class="copy" data-before="Share Story" data-after="Link Copied">
+  <svg class="icon">
+    <use xlink:href="#copy"></use>
+  </svg>
+</div>
+        </div>
+        <div>
+        
+        </div>
+      </div>
+    </div>
+    <a href=http://localhost:1313/NewsroomBlog/ class="post_nav"><span class="post_next">Latest Posts
+      <svg class="icon icon_scale">
+        <use xlink:href="#double-arrow"></use>
+      </svg>
+    </span></a>
+  </div>
+
+    </main>
+    <footer class="footer wrap pale">
+  <p>&copy;&nbsp;<span class="year"></span>&nbsp;Project Showcase</p>
+  <p class="attribution upcase">Designed by  <a href = '<no value>' target = '_blank' title = 'Linkedin Profile' rel = 'nonopener'><no value></a></p>
+</footer>
+
+
+<script src="http://localhost:1313/NewsroomBlog/js/index.min.0c8b9f3d37bbc2061bb8f9bfac9713652c85a41501d73b2b5def4579e67a40a46526acbbb34cd6028725be74381d9c780229983b1d464d85ff85b378f64ebe4d.js"></script>
+
+    <svg width="0" height="0" class="hidden">
+  <symbol xmlns="http://www.w3.org/2000/svg" viewBox="0 0 699.428 699.428" id="copy">
+    <path d="M502.714 0H240.428C194.178 0 153 42.425 153 87.429l-25.267.59c-46.228 0-84.019 41.834-84.019 86.838V612c0 45.004 41.179 87.428 87.429 87.428H459c46.249 0 87.428-42.424 87.428-87.428h21.857c46.25 0 87.429-42.424 87.429-87.428v-349.19L502.714 0zM459 655.715H131.143c-22.95 0-43.714-21.441-43.714-43.715V174.857c0-22.272 18.688-42.993 41.638-42.993l23.933-.721v393.429C153 569.576 194.178 612 240.428 612h262.286c0 22.273-20.765 43.715-43.714 43.715zm153-131.143c0 22.271-20.765 43.713-43.715 43.713H240.428c-22.95 0-43.714-21.441-43.714-43.713V87.429c0-22.272 20.764-43.714 43.714-43.714H459c-.351 50.337 0 87.975 0 87.975 0 45.419 40.872 86.882 87.428 86.882H612v306zm-65.572-349.715c-23.277 0-43.714-42.293-43.714-64.981V44.348L612 174.857h-65.572zm-43.714 131.537H306c-12.065 0-21.857 9.77-21.857 21.835 0 12.065 9.792 21.835 21.857 21.835h196.714c12.065 0 21.857-9.771 21.857-21.835 0-12.065-9.792-21.835-21.857-21.835zm0 109.176H306c-12.065 0-21.857 9.77-21.857 21.834 0 12.066 9.792 21.836 21.857 21.836h196.714c12.065 0 21.857-9.77 21.857-21.836 0-12.064-9.792-21.834-21.857-21.834z"></path>
+  </symbol>
+  <symbol viewBox="0 0 53 42" xmlns="http://www.w3.org/2000/svg" id="double-arrow">
+    <path d="M.595 39.653a1.318 1.318 0 0 1 0-1.864L16.55 21.833a1.318 1.318 0 0 0 0-1.863L.595 4.014a1.318 1.318 0 0 1 0-1.863L2.125.62a1.318 1.318 0 0 1 1.864 0l19.35 19.349a1.318 1.318 0 0 1 0 1.863l-19.35 19.35a1.318 1.318 0 0 1-1.863 0zm29 0a1.318 1.318 0 0 1 0-1.864L45.55 21.833a1.318 1.318 0 0 0 0-1.863L29.595 4.014a1.318 1.318 0 0 1 0-1.863l1.53-1.53a1.318 1.318 0 0 1 1.864 0l19.35 19.349a1.318 1.318 0 0 1 0 1.863l-19.35 19.35a1.318 1.318 0 0 1-1.863 0z"></path>
+  </symbol>
+</svg>
+  </body>
+</html>
